@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="whitelist" value = "['^/foo.*', '^/tf2_web_republisher/.*']" />
+  </include>
+</launch>
