@@ -33,6 +33,7 @@
 import rospy
 import time
 import bson
+import re
 from rosbridge_library.internal.exceptions import InvalidArgumentException
 from rosbridge_library.internal.exceptions import MissingArgumentException
 
@@ -96,6 +97,7 @@ class Protocol:
         self.client_id = client_id
         self.capabilities = []
         self.operations = {}
+        self.whitelist = []
 
         if self.parameters:
             self.fragment_size = self.parameters["max_message_size"]
@@ -158,7 +160,22 @@ class Protocol:
         # if decoding of buffer failed .. simply return
         if msg is None:
             return
+        
+        msg_type = ""
+        if "topic" in msg:
+            msg_type = "topic"
+        if "service" in msg:
+            msg_type = "service"
 
+        found = False
+        for ex in self.whitelist:
+            if re.match(ex, msg[msg_type]):
+                found = True
+        
+        if not found:
+            self.log("error", "Topic or service not on whitelist! ('" + msg[msg_type] + "')")
+            return
+            
         # process fields JSON-message object that "control" rosbridge
         mid = None
         if "id" in msg:

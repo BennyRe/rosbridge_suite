@@ -5,6 +5,7 @@
   <arg name="certfile" default=""/>
   <arg name="keyfile" default="" />
   <arg name="authenticate" default="false" />
+  <arg name="whitelist" default="" />
   
   <group if="$(arg ssl)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
@@ -13,6 +14,7 @@
       <param name="authenticate" value="$(arg authenticate)" />
       <param name="port" value="$(arg port)"/>
       <param name="address" value="$(arg address)"/>
+      <rosparam param="whitelist" subst_value="true">$(arg whitelist)</rosparam>
     </node>
   </group>
   <group unless="$(arg ssl)">
@@ -20,6 +22,7 @@
       <param name="authenticate" value="$(arg authenticate)" />
       <param name="port" value="$(arg port)"/>
       <param name="address" value="$(arg address)"/>
+      <rosparam param="whitelist" subst_value="true">$(arg whitelist)</rosparam>
     </node>
   </group>
   
